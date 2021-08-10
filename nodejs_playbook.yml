@@ -1,0 +1,50 @@
+---
+
+- hosts: web
+  gather_facts: yes
+  become: true
+
+  tasks:
+    - name: Add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: Install nodejs
+      apt:
+        update_cache: yes
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      apt: pkg=npm state=present
+
+    - name: Install pm2
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
+
+    - name: Stop APP
+      shell: pm2 kill
+      args:
+        chdir: /home/vagrant/app/
+      ignore_errors: yes
+
+    - name: Save DB_HOST env
+      become_user: vagrant
+      shell: |
+        export DB_HOST=mongodb://192.168.33.11:27017/posts >> ~/.bashrc
+        export DB_HOST=mongodb://192.168.33.11:27017/posts
+
+    - name: Seed database
+      shell: node seeds/seed.js
+      args:
+        chdir: /home/vagrant/app/
+
+    - name: Start APP
+      shell: pm2 start app.js
+      args:
+        chdir: /home/vagrant/app/
+      ignore_errors: yes

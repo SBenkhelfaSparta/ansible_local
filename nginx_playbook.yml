@@ -1,0 +1,58 @@
+---
+
+# name of the host
+- hosts: web
+
+# finding the facts about the host
+  gather_facts: yes
+
+# we need admin access
+  become: true
+
+# instructions using tasks module in ansible
+  tasks:
+  - name: Install Nginx
+
+# install nginx
+    apt: name=nginx state=present update_cache=yes
+
+# ensure it's running/active
+
+
+# update cache
+# restart nginx if reverse proxy is implemented or if needed
+  - name: "delete current default"
+    file:
+      path: /etc/nginx/sites-available/default
+      state: absent
+  - name: "create file"
+    file:
+      path: /etc/nginx/sites-available/default
+      state: touch
+      mode: 0644
+  - name: "change default file"
+    blockinfile:
+      path: /etc/nginx/sites-available/default
+      block: |
+        server {
+          listen 80;
+          server_name _;
+          location / {
+            include proxy_params;
+            proxy_pass http://192.168.33.10:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+          }
+        }
+
+    notify:
+      - Restart nginx
+
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
