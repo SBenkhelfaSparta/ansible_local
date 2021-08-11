@@ -67,6 +67,7 @@ Vagrant.configure("2") do |config|
 
 end
 ```
+![img](diagram.png)
 
 ## Ansible Playbook files
 For this example I have split the tasks into 3 seperate files, but in a real example it would all be in one.
