@@ -24,8 +24,8 @@ Vagrant.configure("2") do |config|
     config.hostsupdater.aliases = ["development.web"]
     # creating a link called development.web so we can access web page with this link instread of an IP   
         
-	web.vm.synced_folder "app/", "/opt/vagrant/app"
-	web.vm.provision "shell", path: "provision.sh", privileged: false
+    web.vm.synced_folder "app/", "/opt/vagrant/app"
+    web.vm.provision "shell", path: "web_provision.sh", privileged: false
   end
   
 # creating second VM called db
