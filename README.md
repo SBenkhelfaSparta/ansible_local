@@ -235,3 +235,12 @@ For this example I have split the tasks into 3 seperate files, but in a real exa
       ignore_errors: yes
 
 ```
+### Hosts file
+Once you have created the VMs, add them to the hosts file before you ssh in. For the web and db groups you would fill them like so:
+```
+[web]
+192.168.33.10 ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+
+[db]
+192.168.33.11 ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+```
