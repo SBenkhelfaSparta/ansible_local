@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
     config.hostsupdater.aliases = ["development.db"]     
   end
 
- # creating are Ansible controller
+ # creating an Ansible controller
   config.vm.define "controller" do |controller|
     
     controller.vm.box = "bento/ubuntu-18.04"
@@ -50,6 +50,8 @@ Vagrant.configure("2") do |config|
     controller.vm.network :private_network, ip: "192.168.33.12"
     
     config.hostsupdater.aliases = ["development.controller"] 
+	
+	config.vm.provision "shell", path: "ansible_provision.sh", privileged: false
     
   end
 
